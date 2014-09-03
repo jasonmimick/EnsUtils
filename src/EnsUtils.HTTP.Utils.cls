@@ -11,5 +11,14 @@ ClassMethod CreateHTTPRequestWithJSONBody(object as %ZEN.proxyObject) As EnsLib.
 	return http
 }
 
+ClassMethod OutputArrayOfDataTypesToDevice(array as %ArrayOfDataTypes) 
+{
+	set key=array.Next("")
+    while ( key '= "" ) {
+        write key,"=",array.GetAt(key),!
+        set key=array.Next(key)
+    }
+}
+
 
 }
