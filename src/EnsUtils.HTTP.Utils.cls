@@ -8,16 +8,10 @@ ClassMethod CreateHTTPRequestWithJSONBody(object as %ZEN.proxyObject) As EnsLib.
 	do ##class(%ZEN.Auxiliary.jsonProvider).%WriteJSONStreamFromObject(stream,object)
 	do stream.Rewind()
 	set http = ##class(EnsLib.HTTP.GenericMessage).%New(stream,,stream)
+	do http.HTTPHeaders.SetAt(stream.Size,"content-length")
+	do http.HTTPHeaders.SetAt("application/json","content-type")
+	do http.HTTPHeaders.SetAt("POST","httprequest")
 	return http
-}
-
-ClassMethod OutputArrayOfDataTypesToDevice(array as %ArrayOfDataTypes) 
-{
-	set key=array.Next("")
-    while ( key '= "" ) {
-        write key,"=",array.GetAt(key),!
-        set key=array.Next(key)
-    }
 }
 
 
