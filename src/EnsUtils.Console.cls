@@ -14,6 +14,10 @@ ClassMethod internalDir(object as %RegisteredObject,ByRef result as %List) [ Int
 		set $list(result,$listlength(result))=object
 		return
 	}
+	if object.%Extends("%Stream.Object") {
+		do ..Stream(object,.result)
+		return
+	}
 	if object.%Extends("%Library.ArrayOfDataTypes") {
 		do ..ArrayOfDataTypes(object,.result)
 		return
@@ -80,6 +84,15 @@ ClassMethod ZENproxyObject(obj as %ZEN.proxyObject,ByRef lb as %List) [ Internal
 	}
 }
 
+ClassMethod Stream(stream as %Stream.Object,ByRef lb as %List) [ Internal ]
+{
+	do stream.Rewind()
+	while ( 'stream.AtEnd ) {
+		write stream.Read()
+	}
+	write !
+	set $list(lb,1)="Stream Size="_stream.Size
+}
 ClassMethod Test() 
 {
 	set array = ##class(%ArrayOfDataTypes).%New()
@@ -104,6 +117,17 @@ ClassMethod Test()
 	do ..Dir(poo)
 	write !
 	do ..Dir("FooBar!")
+	write !
+
+	set s=##class(%Stream.TmpCharacter).%New()
+	for i=1:1:10 {
+		set chunk=""
+		for i=1:1:$random(100)+1 {
+			set chunk=chunk_$char($random(128))
+		}
+		do s.Write( $zstrip(chunk,"*W") )
+	}
+	do ..Dir(s)
 	write !
 }
 
